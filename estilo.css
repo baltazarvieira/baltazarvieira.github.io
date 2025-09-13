@@ -1,4 +1,4 @@
-/*
+
 body {
     font-family: Arial, sans-serif;
     text-align: left;
@@ -28,21 +28,7 @@ button {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-}
-*/
-{
-margin: 0;
-padding: 0;
-}
-
-a{
-text-decoration: none;
-color: #111;
-padding: 10px;
-float: left;
-margin: 30px;
-font-family: "trebuchet ms";
-background: rgb(167,199,220); /* Old browsers */
+    background: rgb(167,199,220); /* Old browsers */
 background: -moz-linear-gradient(top,  rgba(167,199,220,1) 0%, rgba(58,146,209,1) 50%); /* FF3.6+ */
 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(167,199,220,1)), color-stop(100%,rgba(58,146,209,1))); /* Chrome,Safari4+ */
 background: -webkit-linear-gradient(top,  rgba(167,199,220,1) 0%,rgba(58,146,209,1) 2%); /* Chrome10+,Safari5.1+ */
@@ -54,3 +40,6 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a7c7dc', end
 button:hover {
     background-color: #0056b3;
 }
+
+
+
