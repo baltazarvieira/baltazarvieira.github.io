@@ -3,7 +3,7 @@ body {
     font-family: Arial, sans-serif;
     text-align: left;
     margin:  15px 10px 25px 35px;
-    background: linear-gradient(to right, #48D1CC, #5F9EA0); /* Vermelho para Azul */
+    background: linear-gradient(to right, #FF69B4, #FFFF00); /* Vermelho para Azul */
     min-height: 100vh; /* Garante que o gradiente cubra toda a altura da página */
     margin: 0;
   }
