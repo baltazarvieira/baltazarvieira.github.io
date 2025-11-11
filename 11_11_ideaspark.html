@@ -517,3 +517,175 @@ void loop() {
 }
 
   ====================++++++++++++++++++++++=========================++++++++++++++++++++++==========================++++++++++++++++++++++++++
+//led on_off pela serial e hivemq ideaspark
+    #include <ESP8266WiFi.h>
+#include <WiFiClientSecure.h>
+#include <PubSubClient.h>
+#include <U8x8lib.h>
+
+// ===== CONFIGURAÇÕES DO OLED =====
+// SSD1306 com interface I2C (pinos padrão SDA, SCL)
+//U8X8_SSD1306_128X64_NONAME_HW_I2C display(U8X8_PIN_NONE);   //
+U8X8_SSD1306_128X64_NONAME_SW_I2C u8x8(/* clock=*/ 14, /* data=*/ 12, /* reset=*/ U8X8_PIN_NONE);   // OLEDs without Reset of the Display
+
+// ===== CONFIGURAÇÕES DO WI-FI =====
+const char* ssid = "Connect_Xavier";
+const char* password = "A152021f";
+
+// ===== MQTT (HiveMQ Cloud) CONFIG =====
+const char* mqtt_server = "5123f02098764d0885f1db6e2d8fcab5.s1.eu.hivemq.cloud";
+const int mqtt_port = 8883;
+const char* mqtt_user = "baltazarvieira";
+const char* mqtt_pass = "ZAQmko1968";
+const char* mqtt_topic = "esp8266/msg";
+
+WiFiClientSecure espClient;
+PubSubClient client(espClient);
+
+// ===== OLED VARS =====
+int currentLine = 0;
+const int maxLines = 8;
+
+// ===== CLIENTE ID =====
+String clientID = "ESP8266Cliente01";
+
+// ===== LED ONBOARD =====
+const int ledPin = 2; // GPIO2 = LED onboard (D4 no NodeMCU)
+bool ledState = false;
+
+// ===== WIFI SETUP =====
+void setup_wifi() {
+  Serial.print("\nConectando ao Wi-Fi: ");
+  Serial.println(ssid);
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("\nWi-Fi conectado!");
+  Serial.print("IP: ");
+  Serial.println(WiFi.localIP());
+}
+
+// ===== OLED OUTPUT =====
+void mostrarNoOLED(String texto) {
+  if (currentLine >= maxLines) {
+    u8x8.clearDisplay();
+    currentLine = 0;
+  }
+  u8x8.setCursor(0, currentLine);
+  u8x8.print(texto);
+  currentLine++;
+}
+
+// ===== MQTT CALLBACK =====
+void callback(char* topic, byte* payload, unsigned int length) {
+  String msg = "";
+  for (unsigned int i = 0; i < length; i++) {
+    msg += (char)payload[i];
+  }
+
+  Serial.print("\n[MQTT] ");
+  Serial.print(topic);
+  Serial.print(": ");
+  Serial.println(msg);
+
+  // Ignora mensagens do próprio cliente
+  if (msg.startsWith("ID:" + clientID)) {
+    return;
+  }
+
+  // Remove prefixo "ID:OutroID:"
+  int sep = msg.indexOf(':', 3);
+  if (sep > 0) msg = msg.substring(sep + 1);
+
+  // Interpreta comandos de LED
+  if (msg.equalsIgnoreCase("LED ON")) {
+    digitalWrite(ledPin, LOW); // acende (inverso)
+    ledState = true;
+    mostrarNoOLED("Srv: LED ON");
+  } else if (msg.equalsIgnoreCase("LED OFF")) {
+    digitalWrite(ledPin, HIGH); // apaga
+    ledState = false;
+    mostrarNoOLED("Srv: LED OFF");
+  } else {
+    mostrarNoOLED("Srv: " + msg);
+  }
+}
+
+// ===== MQTT RECONNECT =====
+void reconnect() {
+  while (!client.connected()) {
+    Serial.print("Conectando ao HiveMQ Cloud...");
+    if (client.connect(clientID.c_str(), mqtt_user, mqtt_pass)) {
+      Serial.println("Conectado!");
+      client.subscribe(mqtt_topic);
+      client.publish("esp8266/status", "ESP8266 conectado com LED onboard");
+      u8x8.clearDisplay();
+      u8x8.setCursor(0, 0);
+      u8x8.print("Conectado MQTT");
+      currentLine = 1;
+    } else {
+      Serial.print("Falha, rc=");
+      Serial.print(client.state());
+      Serial.println(" tentando novamente em 5s...");
+      delay(5000);
+    }
+  }
+}
+
+// ===== SETUP =====
+void setup() {
+  Serial.begin(115200);
+  setup_wifi();
+
+  pinMode(ledPin, OUTPUT);
+  digitalWrite(ledPin, HIGH); // LED apagado
+
+  espClient.setInsecure();
+  client.setServer(mqtt_server, mqtt_port);
+  client.setCallback(callback);
+
+  // OLED
+  u8x8.begin();
+  u8x8.setFont(u8x8_font_chroma48medium8_r);
+  u8x8.drawString(0, 0, "Inicializando...");
+  delay(1000);
+}
+
+// ===== LOOP =====
+void loop() {
+  if (!client.connected()) {
+    reconnect();
+  }
+  client.loop();
+
+  // ===== COMANDOS VIA SERIAL =====
+  if (Serial.available()) {
+    String texto = Serial.readStringUntil('\n');
+    texto.trim();
+
+    if (texto.length() > 0) {
+      Serial.print("[Serial -> MQTT] ");
+      Serial.println(texto);
+
+      // Publica no MQTT com ID
+      String payload = "ID:" + clientID + ":" + texto;
+      client.publish(mqtt_topic, payload.c_str());
+
+      // Ações locais
+      if (texto.equalsIgnoreCase("LED ON")) {
+        digitalWrite(ledPin, LOW);
+        ledState = true;
+        mostrarNoOLED("Eu: LED ON");
+      } else if (texto.equalsIgnoreCase("LED OFF")) {
+        digitalWrite(ledPin, HIGH);
+        ledState = false;
+        mostrarNoOLED("Eu: LED OFF");
+      } else {
+        mostrarNoOLED("Eu: " + texto);
+      }
+    }
+  }
+}
+=====================+++++++++++++++++++++=======================++++++++++++++++++++========================++++++++++++++++++++++++=
