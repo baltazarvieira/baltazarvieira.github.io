@@ -368,3 +368,152 @@ void loop() {
     }
   }
 }
+
+  =================+++++++++++++++++++++++=====================++++++++++++++++++=================++++++++++++++++++++++======================
+    //msg cumulativo mqtt ideaspark
+    #include <ESP8266WiFi.h>
+#include <WiFiClientSecure.h>
+#include <PubSubClient.h>
+#include <U8x8lib.h>
+
+// ====== OLED (U8x8) ======
+U8X8_SSD1306_128X64_NONAME_SW_I2C u8x8(/* clock=*/ 14, /* data=*/ 12, /* reset=*/ U8X8_PIN_NONE);   // OLEDs without Reset of the Display
+// ====== CONFIG Wi-Fi ======
+const char* ssid = "Connect_Xavier";
+const char* password = "A152021f";
+
+// ====== CONFIG MQTT (HiveMQ Cloud) ======
+const char* mqtt_server = "5123f02098764d0885f1db6e2d8fcab5.s1.eu.hivemq.cloud";  // Substitua pelo seu host
+const int mqtt_port = 8883;
+const char* mqtt_user = "baltazarvieira";
+const char* mqtt_pass = "ZAQmko1968";
+
+
+const char* mqtt_topic = "esp8266/msg"; // Tópico único de chat
+
+WiFiClientSecure espClient;
+PubSubClient client(espClient);
+
+// ===== VARIÁVEIS DO OLED =====
+int currentLine = 0;
+const int maxLines = 8;
+
+// ===== ID ÚNICO DO DISPOSITIVO =====
+String clientID = "ESP8266Cliente01";  // altere se tiver mais de um dispositivo
+
+// ===== FUNÇÃO: CONECTA AO WIFI =====
+void setup_wifi() {
+  Serial.print("\nConectando ao Wi-Fi: ");
+  Serial.println(ssid);
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("\nWi-Fi conectado!");
+  Serial.print("IP: ");
+  Serial.println(WiFi.localIP());
+}
+
+// ===== FUNÇÃO: MOSTRAR NO OLED =====
+void mostrarNoOLED(String texto) {
+  if (currentLine >= maxLines) {
+    u8x8.clearDisplay();
+    currentLine = 0;
+  }
+  u8x8.setCursor(0, currentLine);
+  u8x8.print(texto);
+  currentLine++;
+}
+
+// ===== CALLBACK: mensagem recebida MQTT =====
+void callback(char* topic, byte* payload, unsigned int length) {
+  String msg = "";
+  for (unsigned int i = 0; i < length; i++) {
+    msg += (char)payload[i];
+  }
+
+  Serial.print("\n[MQTT] ");
+  Serial.print(topic);
+  Serial.print(": ");
+  Serial.println(msg);
+
+  // Evita mostrar eco da própria mensagem
+  if (msg.startsWith("ID:" + clientID)) {
+    return; // ignora mensagens enviadas por este próprio dispositivo
+  }
+
+  // Remove prefixo "ID:OutroID:"
+  int sep = msg.indexOf(':', 3);
+  if (sep > 0) msg = msg.substring(sep + 1);
+
+  // Mostra no OLED
+  mostrarNoOLED("Srv: " + msg);
+}
+
+// ===== RECONEXÃO MQTT =====
+void reconnect() {
+  while (!client.connected()) {
+    Serial.print("Conectando ao HiveMQ Cloud...");
+    if (client.connect(clientID.c_str(), mqtt_user, mqtt_pass)) {
+      Serial.println("Conectado!");
+      client.subscribe(mqtt_topic);
+      client.publish("esp8266/status", "ESP8266 conectado com sucesso");
+      u8x8.clearDisplay();
+      u8x8.setCursor(0, 0);
+      u8x8.print("Conectado MQTT");
+      currentLine = 1;
+    } else {
+      Serial.print("Falha, rc=");
+      Serial.print(client.state());
+      Serial.println(" tentando novamente em 5s...");
+      delay(5000);
+    }
+  }
+}
+
+// ===== SETUP =====
+void setup() {
+  Serial.begin(115200);
+  setup_wifi();
+
+  espClient.setInsecure(); // ignora certificados TLS
+  client.setServer(mqtt_server, mqtt_port);
+  client.setCallback(callback);
+
+  // Inicializa OLED
+  u8x8.begin();
+  u8x8.setFont(u8x8_font_chroma48medium8_r);
+  u8x8.drawString(0, 0, "Inicializando...");
+  delay(1000);
+}
+
+// ===== LOOP PRINCIPAL =====
+void loop() {
+  if (!client.connected()) {
+    reconnect();
+  }
+  client.loop();
+
+  // ===== LER TEXTO DO MONITOR SERIAL =====
+  if (Serial.available()) {
+    String texto = Serial.readStringUntil('\n');
+    texto.trim();
+
+    if (texto.length() > 0) {
+      Serial.print("[Serial -> MQTT] ");
+      Serial.println(texto);
+
+      // Prefixa com ID do cliente
+      String payload = "ID:" + clientID + ":" + texto;
+
+      // Publica no HiveMQ
+      client.publish(mqtt_topic, payload.c_str());
+
+      // Mostra localmente no display
+      mostrarNoOLED("Eu: " + texto);
+    }
+  }
+}
+
+  ====================++++++++++++++++++++++=========================++++++++++++++++++++++==========================++++++++++++++++++++++++++
