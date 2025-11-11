@@ -1,3 +1,4 @@
+//escrever e receber via serial e site HiveMQ
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 #include <WiFiClientSecure.h>
@@ -94,3 +95,276 @@ void loop() {
   }
 }
 ++++++++++++++++====================+++++++++++++++++++++++++=======================++++++++++++++++++++++++++
+//Escrever na seial e receber no oled
+    #include <ESP8266WiFi.h>
+#include <WiFiClientSecure.h>
+#include <PubSubClient.h>
+#include <Adafruit_GFX.h>          //
+#include <Adafruit_SSD1306.h>      //
+
+
+// ======== CONFIGURAÇÕES DO OLED ========         //
+#define SCREEN_WIDTH 128                           //
+#define SCREEN_HEIGHT 64                           //
+#define OLED_RESET -1                              //
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);  
+
+
+// ======== CONFIGURAÇÕES DE REDE ========
+//const char* ssid = "Connect_Xavier";
+//const char* password = "A152021f";
+const char* ssid = "Connect_Sebastiao";
+const char* password = "s49M34I13c7";
+// ======== CONFIGURAÇÕES DO HIVEMQ CLOUD ========
+const char* mqtt_server = "5123f02098764d0885f1db6e2d8fcab5.s1.eu.hivemq.cloud"; // Seu host HiveMQ Cloud
+const int mqtt_port = 8883;                            // Porta segura (TLS)
+const char* mqtt_user = "baltazarvieira";                 // Usuário MQTT
+const char* mqtt_pass = "ZAQmko1968";                   // Senha MQTT
+const char* mqtt_topic = "esp8266/teste";              // Tópico MQTT
+
+WiFiClientSecure espClient;
+PubSubClient client(espClient);
+String textoSerial = "";
+
+// ======== CONECTAR AO WI-FI ========
+void setup_wifi() {
+  Serial.print("\nConectando ao Wi-Fi: ");
+  Serial.println(ssid);
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("\nWi-Fi conectado!");
+  Serial.print("Endereço IP: ");
+  Serial.println(WiFi.localIP());
+}
+
+// ======== EXIBIR TEXTO NO OLED ========
+void mostrarOLED(String linha1, String linha2 = "") {
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0, 0);
+  display.println(linha1);
+  if (linha2 != "") {
+    display.setCursor(0, 20);
+    display.println(linha2);
+  }
+  display.display();
+}
+
+// ======== CALLBACK (mensagem recebida) ========
+void callback(char* topic, byte* payload, unsigned int length) {
+  Serial.print("\nMensagem recebida [");
+  Serial.print(topic);
+  Serial.print("]: ");
+
+  String msg = "";
+  for (unsigned int i = 0; i < length; i++) {
+    char c = (char)payload[i];
+    msg += c;
+    Serial.print(c);
+  }
+  Serial.println();
+
+  // Exibir no OLED
+  mostrarOLED("Mensagem MQTT:", msg);
+}
+
+// ======== RECONEXÃO AO MQTT ========
+void reconnect() {
+  while (!client.connected()) {
+    Serial.print("Conectando ao HiveMQ Cloud...");
+    if (client.connect("ESP8266Cliente", mqtt_user, mqtt_pass)) {
+      Serial.println("Conectado!");
+      client.subscribe(mqtt_topic);
+      mostrarOLED("MQTT conectado!", mqtt_topic);
+    } else {
+      Serial.print("Falhou, rc=");
+      Serial.print(client.state());
+      Serial.println(" tentando novamente em 5s...");
+      mostrarOLED("Falha MQTT", "Tentando reconectar...");
+      delay(5000);
+    }
+  }
+}
+
+// ======== SETUP ========
+void setup() {
+  Serial.begin(115200);
+
+  // Iniciar OLED
+  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+    Serial.println("Falha ao iniciar display OLED!");
+    for (;;);
+  }
+  display.clearDisplay();
+  display.display();
+  mostrarOLED("Iniciando...", "ESP8266 + MQTT");
+
+  // Conectar Wi-Fi e MQTT
+  setup_wifi();
+  espClient.setInsecure();  // Desativa validação do certificado TLS (para testes)
+  client.setServer(mqtt_server, mqtt_port);
+  client.setCallback(callback);
+
+  mostrarOLED("Conectando...", "HiveMQ Cloud");
+}
+
+// ======== LOOP ========
+void loop() {
+  if (!client.connected()) {
+    reconnect();
+  }
+  client.loop();
+
+  // Enviar texto do Serial
+  if (Serial.available()) {
+    textoSerial = Serial.readStringUntil('\n');
+    textoSerial.trim();
+    if (textoSerial.length() > 0) {
+      client.publish(mqtt_topic, textoSerial.c_str());
+      Serial.print("Mensagem enviada: ");
+      Serial.println(textoSerial);
+      mostrarOLED("Enviado:", textoSerial);
+    }
+  }
+}
+
+======================++++++++++++++++++++++++++===========================++++++++++++++++++++++++++++++============================
+//texto via oled MQTT no ideaspark
+    #include <ESP8266WiFi.h>
+#include <WiFiClientSecure.h>
+#include <PubSubClient.h>
+#include <U8x8lib.h>
+
+// ===== CONFIGURAÇÕES DO OLED =====
+// SSD1306 com interface I2C (pinos padrão SDA, SCL)
+//U8X8_SSD1306_128X64_NONAME_HW_I2C display(U8X8_PIN_NONE);   //
+U8X8_SSD1306_128X64_NONAME_SW_I2C u8x8(/* clock=*/ 14, /* data=*/ 12, /* reset=*/ U8X8_PIN_NONE);   // OLEDs without Reset of the Display
+
+// ===== CONFIGURAÇÕES DO WI-FI =====
+const char* ssid = "Connect_Xavier";
+const char* password = "A152021f";
+
+// ===== CONFIGURAÇÕES DO HIVEMQ CLOUD =====
+const char* mqtt_server = "5123f02098764d0885f1db6e2d8fcab5.s1.eu.hivemq.cloud";  // Seu host do HiveMQ Cloud
+const int mqtt_port = 8883;                            // Porta segura (TLS)
+const char* mqtt_user = "baltazarvieira";                 // Usuário MQTT
+const char* mqtt_pass = "ZAQmko1968";                   // Senha MQTT
+const char* mqtt_topic = "esp8266/teste";              // Tópico MQTT
+
+WiFiClientSecure espClient;
+PubSubClient client(espClient);
+String textoSerial = "";
+
+// ===== FUNÇÃO: conectar ao Wi-Fi =====
+void setup_wifi() {
+   u8x8.begin();
+  Serial.print("\nConectando ao Wi-Fi: ");
+  Serial.println(ssid);
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("\nWi-Fi conectado!");
+  Serial.print("Endereço IP: ");
+  Serial.println(WiFi.localIP());
+
+  u8x8.clear();
+  u8x8.drawString(0, 0, "Wi-Fi conectado!");
+  u8x8.drawString(0, 1, WiFi.localIP().toString().c_str());
+}
+
+// ===== FUNÇÃO: exibir texto no OLED =====
+void mostrarOLED(const String &linha1, const String &linha2 = "") {
+  u8x8.clear();
+  u8x8.drawString(0, 0, linha1.c_str());
+  u8x8.drawString(0, 2, linha2.c_str());
+}
+
+// ===== CALLBACK: chamada quando mensagem é recebida =====
+void callback(char* topic, byte* payload, unsigned int length) {
+  Serial.print("\nMensagem recebida [");
+  Serial.print(topic);
+  Serial.print("]: ");
+
+  String msg = "";
+  for (unsigned int i = 0; i < length; i++) {
+    char c = (char)payload[i];
+    msg += c;
+    Serial.print(c);
+  }
+  Serial.println();
+
+  // Exibir no OLED
+  mostrarOLED("Recebido MQTT:", msg);
+}
+
+// ===== RECONEXÃO MQTT =====
+void reconnect() {
+  while (!client.connected()) {
+    Serial.print("Conectando ao HiveMQ Cloud...");
+    if (client.connect("ESP8266Cliente", mqtt_user, mqtt_pass)) {
+      Serial.println("Conectado!");
+      client.subscribe(mqtt_topic);
+      mostrarOLED("MQTT conectado!", mqtt_topic);
+    } else {
+      Serial.print("Falhou, rc=");
+      Serial.print(client.state());
+      Serial.println(" tentando em 5s...");
+      mostrarOLED("Falha MQTT", "Tentando reconectar...");
+      delay(5000);
+    }
+  }
+}
+
+// ===== SETUP =====
+void setup() {
+  Serial.begin(115200);
+
+  // Inicializa OLED
+   char time_output[30];
+ // display.begin();          //
+  u8x8.setFont(u8x8_font_chroma48medium8_r);
+  u8x8.clear();
+  u8x8.drawString(0, 0, "Iniciando ESP8266...");
+  u8x8.drawString(0, 1, "MQTT + OLED");
+
+  setup_wifi();
+
+  // TLS - ignora verificação de certificado (teste)
+  espClient.setInsecure();
+
+  client.setServer(mqtt_server, mqtt_port);
+  client.setCallback(callback);
+
+  mostrarOLED("Conectando...", "HiveMQ Cloud");
+}
+
+// ===== LOOP =====
+void loop() {
+  if (!client.connected()) {
+    reconnect();
+  }
+  client.loop();
+
+  // Enviar texto digitado no Serial
+  if (Serial.available()) {
+    textoSerial = Serial.readStringUntil('\n');
+    textoSerial.trim();
+
+    if (textoSerial.length() > 0) {
+      client.publish(mqtt_topic, textoSerial.c_str());
+      Serial.print("Mensagem enviada: ");
+      Serial.println(textoSerial);
+      mostrarOLED("Enviado:", textoSerial);
+    }
+  }
+}
