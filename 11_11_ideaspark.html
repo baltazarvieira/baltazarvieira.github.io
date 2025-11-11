@@ -1,0 +1,96 @@
+#include <ESP8266WiFi.h>
+#include <PubSubClient.h>
+#include <WiFiClientSecure.h>
+
+// ====== CONFIGURAÇÕES DO WI-FI ======
+const char* ssid = "Connect_Xavier";
+const char* password = "A152021f";
+
+// ====== CONFIGURAÇÕES DO HIVEMQ CLOUD ======
+const char* mqtt_server = "5123f02098764d0885f1db6e2d8fcab5.s1.eu.hivemq.cloud";  // substitua pelo SEU endereço do HiveMQ Cloud
+const int mqtt_port = 8883;                            // porta segura (TLS)
+const char* mqtt_user = "baltazarvieira";                 // usuário do HiveMQ Cloud
+const char* mqtt_pass = "ZAQmko1968";                   // senha do HiveMQ Cloud
+const char* mqtt_topic = "esp8266/teste";              // tópico de envio/recepção
+
+WiFiClientSecure espClient;   // cliente seguro (TLS)
+PubSubClient client(espClient);
+String textoSerial = "";
+
+// ====== Conecta ao Wi-Fi ======
+void setup_wifi() {
+  Serial.print("\nConectando ao Wi-Fi: ");
+  Serial.println(ssid);
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("\nWiFi conectado!");
+  Serial.print("Endereço IP: ");
+  Serial.println(WiFi.localIP());
+}
+
+// ====== Função chamada ao receber mensagem MQTT ======
+void callback(char* topic, byte* payload, unsigned int length) {
+  Serial.print("\nMensagem recebida [");
+  Serial.print(topic);
+  Serial.print("]: ");
+  for (unsigned int i = 0; i < length; i++) {
+    Serial.print((char)payload[i]);
+  }
+  Serial.println();
+}
+
+// ====== Reconecta ao MQTT se cair ======
+void reconnect() {
+  while (!client.connected()) {
+    Serial.print("Conectando ao HiveMQ Cloud...");
+    if (client.connect("ESP8266Cliente", mqtt_user, mqtt_pass)) {
+      Serial.println("Conectado!");
+      client.subscribe(mqtt_topic);
+    } else {
+      Serial.print("Falhou, rc=");
+      Serial.print(client.state());
+      Serial.println(" tentando novamente em 5s...");
+      delay(5000);
+    }
+  }
+}
+
+// ====== SETUP ======
+void setup() {
+  Serial.begin(115200);
+  setup_wifi();
+
+  // Desabilita verificação do certificado (mais simples para testes)
+  espClient.setInsecure();
+
+  client.setServer(mqtt_server, mqtt_port);
+  client.setCallback(callback);
+
+  Serial.println("\nDigite uma mensagem no Monitor Serial e pressione Enter:");
+}
+
+// ====== LOOP ======
+void loop() {
+  if (!client.connected()) {
+    reconnect();
+  }
+  client.loop();
+
+  // Envia o texto digitado
+  if (Serial.available()) {
+    textoSerial = Serial.readStringUntil('\n');
+    textoSerial.trim();
+
+    if (textoSerial.length() > 0) {
+      client.publish(mqtt_topic, textoSerial.c_str());
+      Serial.print("Mensagem enviada: ");
+      Serial.println(textoSerial);
+    }
+  }
+}
+++++++++++++++++====================+++++++++++++++++++++++++=======================++++++++++++++++++++++++++
