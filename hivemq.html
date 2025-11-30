@@ -1,98 +1,84 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>Controle de Lâmpadas MQTT</title>
+<title>Controle de Lâmpadas - MQTT</title>
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
 <style>
-    body {
-        font-family: Arial;
-        background: #f0f0f0;
-        padding: 20px;
-        text-align: center;
-    }
-    .card {
-        background: white;
-        padding: 20px;
-        margin: 20px auto;
-        width: 300px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px #999;
-    }
-    button {
-        width: 120px;
-        padding: 15px;
-        margin: 10px;
-        font-size: 18px;
-        border-radius: 8px;
-        border: none;
-        cursor: pointer;
-    }
-    .on { background: #28a745; color: white; }
-    .off { background: #dc3545; color: white; }
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: #f2f2f2;
+    padding-top: 30px;
+}
+button {
+    width: 150px;
+    height: 50px;
+    font-size: 20px;
+    margin: 10px;
+}
+.status {
+    font-size: 24px;
+    margin-top: 20px;
+}
 </style>
 </head>
 
 <body>
 
-<h2>Controle MQTT - 2 Lâmpadas</h2>
+<h2>Controle de Lâmpadas via HiveMQ Cloud</h2>
 
-<div class="card">
-    <h3>Lâmpada 1</h3>
-    <button class="on"  onclick="publish('casa/lampada1', 'ON')">Ligar</button>
-    <button class="off" onclick="publish('casa/lampada1', 'OFF')">Desligar</button>
-</div>
+<h3>Lâmpada 1</h3>
+<button onclick="sendMessage('casa/lampada1', 'ON')">Ligar</button>
+<button onclick="sendMessage('casa/lampada1', 'OFF')">Desligar</button>
 
-<div class="card">
-    <h3>Lâmpada 2</h3>
-    <button class="on"  onclick="publish('casa/lampada2', 'ON')">Ligar</button>
-    <button class="off" onclick="publish('casa/lampada2', 'OFF')">Desligar</button>
-</div>
+<h3>Lâmpada 2</h3>
+<button onclick="sendMessage('casa/lampada2', 'ON')">Ligar</button>
+<button onclick="sendMessage('casa/lampada2', 'OFF')">Desligar</button>
 
-<br>
-<div id="status">Status: desconectado...</div>
-
-<script src="https://unpkg.com/paho-mqtt/mqttws31.min.js"></script>
+<div class="status" id="statusMsg">Conectando ao MQTT...</div>
 
 <script>
 
-// ======= CONFIGURAÇÕES MQTT =======
-const mqtt_server = "5123f02098764d0885f1db6e2d8fcab5.s1.eu.hivemq.cloud:8884/mqtt";
-const mqtt_port   = 8884;          // WebSocket seguro do HiveMQ Cloud
-const mqtt_user   = "baltazarvieira";
-const mqtt_pass   = "ZAQmko1968";
+// ===== CONFIGURAÇÕES MQTT =====
+const options = {
+    username: "baltazarvieira",
+    password: "ZAQmko1968",
+    clean: true,
+    connectTimeout: 4000,
+    reconnectPeriod: 2000
+};
 
-document.getElementById("status").innerText = "Conectando ao HiveMQ...";
-
-// Cliente MQTT (ID aleatório)
-let clientID = "WEBCLIENT_" + Math.floor(Math.random() * 9999);
-
-let client = new Paho.MQTT.Client(
-    mqtt_server,
-    mqtt_port,
-    "/mqtt",
-    clientID
+// Conexão WebSocket segura (WSS)
+const client = mqtt.connect(
+    "wss://5123f02098764d0885f1db6e2d8fcab5.s1.eu.hivemq.cloud:8884/mqtt",
+    options
 );
 
-// Conexão
-client.connect({
-    onSuccess: onConnect,
-    userName: mqtt_user,
-    password: mqtt_pass,
-    useSSL: true
+// Tópicos usados no NodeMCU
+const topico1 = "casa/lampada1";
+const topico2 = "casa/lampada2";
+
+client.on("connect", () => {
+    document.getElementById("statusMsg").innerText = "Conectado ao MQTT!";
+
+    client.subscribe(topico1);
+    client.subscribe(topico2);
 });
 
-// Função chamada ao conectar
-function onConnect() {
-    document.getElementById("status").innerText = "Status: conectado ao HiveMQ!";
-}
+client.on("message", (topic, message) => {
+    console.log("Recebido:", topic, message.toString());
+});
 
-// Publicar mensagens
-function publish(topico, mensagem) {
-    let msg = new Paho.MQTT.Message(mensagem);
-    msg.destinationName = topico;
-    client.send(msg);
+client.on("error", (err) => {
+    document.getElementById("statusMsg").innerText = "Erro MQTT!";
+    console.error(err);
+});
 
-    console.log("Publicado:", topico, "=>", mensagem);
+// Função para enviar mensagens
+function sendMessage(topic, msg) {
+    client.publish(topic, msg);
 }
 
 </script>
