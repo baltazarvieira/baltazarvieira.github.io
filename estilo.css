@@ -5,7 +5,7 @@ body {
     border: 40px solid transparent; 
     
     /* Caminho para o seu ícone .png */
-    border-image-source: url('seu-icone.png'); 
+    border-image-source: url('quimica.png'); 
     
     /* Slice: define onde a imagem será "cortada". 
        Use 33% para ícones simples para que ele apareça nos cantos e laterais */
