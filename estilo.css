@@ -2,18 +2,28 @@
 body {
    
     /* Define o espaço para a borda aparecer */
-    border: 40px solid transparent; 
+    border: 30px solid transparent; 
     
     /* Caminho para o seu ícone .png */
     border-image-source: url('quimica.png'); 
     
     /* Slice: define onde a imagem será "cortada". 
        Use 33% para ícones simples para que ele apareça nos cantos e laterais */
-    border-image-slice: 33%; 
+    border-image-slice: 30%; 
+   /* 4. WIDTH: Força a borda a manter o tamanho pequeno desejado */
+    border-image-width: 30px;
+
+    /* 5. REPEAT: 'space' ou 'round' evita cortes e mantém a nitidez */
+    border-image-repeat: space;
+
+    /* 6. Melhora a nitidez em imagens pequenas */
+    image-rendering: pixelated; 
     
-    /* Repeat: 'round' ajusta os ícones para que caibam inteiros na borda */
-    border-image-repeat: round; 
+    padding: 40px;
+    min-height: 100vh;
+    margin: 0;
     
+   
     /* Garante que o conteúdo não encoste na borda */
     padding: 20px;
     min-height: 100vh;
