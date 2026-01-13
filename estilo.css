@@ -1,5 +1,23 @@
 
 body {
+   
+    /* Define o espaço para a borda aparecer */
+    border: 40px solid transparent; 
+    
+    /* Caminho para o seu ícone .png */
+    border-image-source: url('seu-icone.png'); 
+    
+    /* Slice: define onde a imagem será "cortada". 
+       Use 33% para ícones simples para que ele apareça nos cantos e laterais */
+    border-image-slice: 33%; 
+    
+    /* Repeat: 'round' ajusta os ícones para que caibam inteiros na borda */
+    border-image-repeat: round; 
+    
+    /* Garante que o conteúdo não encoste na borda */
+    padding: 20px;
+    min-height: 100vh;
+    margin: 0;
     font-family: Arial, sans-serif;
     text-align: left;
     margin:  15px 10px 25px 35px;
