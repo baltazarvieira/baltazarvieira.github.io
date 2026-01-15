@@ -19,8 +19,8 @@ body {
     /*border-image-repeat: round;        /* ← mais recomendado para evitar distorção */
     /*Alternativas para testar: */
     /*border-image-repeat: repeat;    */
-    border-image-repeat: space;     */
-    /* border-image-repeat: round repeat;  ← horizontal round, vertical repeat */
+    /*border-image-repeat: space;     */
+     border-image-repeat: round repeat;  ← horizontal round, vertical repeat */
 
     font-family: Arial, sans-serif;
     background: linear-gradient(to right, #FF69B4, #FFFF00);
