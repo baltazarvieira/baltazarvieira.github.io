@@ -4,7 +4,7 @@ body {
     min-height: 100vh;
 
     border: 32px solid transparent;
-    border-image-source: url("quimica.png");
+    border-image-source: url("quimica.jpg");
     border-image-slice: 32;
     border-image-width: 32px;
     border-image-repeat: repeat;
