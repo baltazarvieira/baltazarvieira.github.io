@@ -1,59 +1,24 @@
-
 body {
-   
-    /* Define o espaço para a borda aparecer */
-    border: 30px solid transparent; 
-    
-    /* Caminho para o seu ícone .png */
-    border-image-source: url('quimica.png'); 
-    
-    /* Slice: define onde a imagem será "cortada". 
-       Use 33% para ícones simples para que ele apareça nos cantos e laterais */
-    border-image-slice: 30%; 
-   /* 4. WIDTH: Força a borda a manter o tamanho pequeno desejado */
-    border-image-width: 30px;
-
-    /* 5. REPEAT: 'space' ou 'round' evita cortes e mantém a nitidez */
-    border-image-repeat: space;
-
-    /* 6. Melhora a nitidez em imagens pequenas */
-    image-rendering: pixelated; 
-    
-    padding: 40px;
-    min-height: 100vh;
     margin: 0;
-    
-   
-    /* Garante que o conteúdo não encoste na borda */
     padding: 20px;
     min-height: 100vh;
-    margin: 0;
+
+    border: 30px solid transparent;
+    border-image-source: url('quimica.jpg');
+    border-image-slice: 30;
+    border-image-width: 30px;
+    border-image-repeat: repeat;
+
     font-family: Arial, sans-serif;
     text-align: left;
-    margin:  15px 10px 25px 35px;
-    background: linear-gradient(to right, #FF69B4, #FFFF00); /* Vermelho para Azul */
-    min-height: 100vh; /* Garante que o gradiente cubra toda a altura da página */
-    margin: 0;
-  }
+
+    background: linear-gradient(to right, #FF69B4, #FFFF00);
 }
 
-h1 {
+h1, h2, h3, h4 {
     color: #007bff;
 }
-h2 {
-color: #007bff;
+
+p {
+    color: #000;
 }
-h3 {
-color: #007bff;
-}
-h4 {
-color: #007bff;
-}
-  p {
-    color: #000000;
-}
-
-
-
-
-
