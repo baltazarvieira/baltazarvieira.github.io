@@ -4,15 +4,15 @@ body {
     min-height: 100vh;
     box-sizing: border-box;
 
-    /* Configuração da Borda com dimensões 47x44 */
-    border: 44px solid transparent; /* Largura visual da borda */
+    border: 44px solid transparent;
     border-image-source: url("quimica.jpg");
-    
-    /* Slice segue a ordem: Topo (44) Direita (47) Baixo (44) Esquerda (47) */
-    border-image-slice: 44 47 44 47; 
-    
-    border-image-width: 44px; /* Altura da borda na tela */
-    border-image-repeat: round; /* Repete a imagem sem cortá-la no meio */
+
+    /* Topo | Direita | Baixo | Esquerda */
+    border-image-slice: 44 47 44 47;
+    border-image-width: 44px 47px 44px 47px;
+
+    /* use repeat se encaixar perfeitamente, senão round */
+    border-image-repeat: repeat;
 
     font-family: Arial, sans-serif;
     background: linear-gradient(to right, #FF69B4, #FFFF00);
