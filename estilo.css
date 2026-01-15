@@ -1,35 +1,33 @@
-
 body {
     margin: 0;
-    padding: 40px;
+    padding: 60px;                 /* aumentei um pouco para ver melhor o efeito da borda */
     min-height: 100vh;
     box-sizing: border-box;
 
-    /* Define a espessura real da borda (44px de altura e 47px de largura visual) */
-    border-width: 44px 47px;
-    border-style: solid; /* Necessário para que a borda seja renderizada */
+    border-width: 44px 47px;       /* mantém a espessura visual desejada */
+    border-style: solid;
     border-color: transparent;
 
     border-image-source: url("quimica.jpg");
 
-    /* Slice: Usa os valores exatos em pixels da imagem original, sem unidade */
-    /* Topo | Direita | Baixo | Esquerda */
-    border-image-slice: 44 47 44 47;
+    /* Tente esses valores de slice menores se a imagem for um padrão pequeno */
+    border-image-slice: 40 40 40 40;   /* teste com valores iguais primeiro, ou volte para 44 47 44 47 */
+    
+    border-image-width: 44px 47px;     /* mantém a espessura exata */
 
-    /* Width: Força a borda a manter o tamanho exato de pixels desejado (opcional, mas recomendado) */
-    border-image-width: 44px 47px;
+    /* Aqui está o principal ajuste: */
+    border-image-repeat: round;        /* ← mais recomendado para evitar distorção */
+    /* Alternativas para testar: */
+    /* border-image-repeat: repeat;    */
+    /* border-image-repeat: space;     */
+    /* border-image-repeat: round repeat;  ← horizontal round, vertical repeat */
 
-    /* Round: Evita cortes e mantém a nitidez ajustando o espaçamento/tamanho */
-    border-image-repeat: round;
-
-    /* Estilos de fundo e fonte */
     font-family: Arial, sans-serif;
     background: linear-gradient(to right, #FF69B4, #FFFF00);
-    background-attachment: fixed; /* Mantém o gradiente parado ao rolar */
-    background-clip: padding-box; /* Garante que o fundo não invada a área da borda transparente */
+    background-attachment: fixed;
+    background-clip: padding-box;
 }
 
-/* Mantendo seus parâmetros de texto conforme solicitado */
 h1, h2, h3, h4 {
     color: #007bff;
 }
@@ -37,4 +35,3 @@ h1, h2, h3, h4 {
 p {
     color: #000000;
 }
-
