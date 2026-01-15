@@ -4,17 +4,33 @@ body {
     min-height: 100vh;
     box-sizing: border-box;
 
-    border: 44px solid transparent;
+    /* 1. Define o tamanho da borda */
+    border: 30px solid transparent;
+
+    /* 2. Caminho da imagem */
     border-image-source: url("quimica.jpg");
 
-    /* Topo | Direita | Baixo | Esquerda */
-    border-image-slice: 44 47 44 47;
-    border-image-width: 44px 47px 44px 47px;
+    /* 3. Slice: Use um valor que represente o tamanho real do ícone na imagem.
+       Se for um ícone único, tente 30 ou 33%. Se for uma folha de ícones, use o valor em pixels. */
+    border-image-slice: 30%;
 
-    /* use repeat se encaixar perfeitamente, senão round */
-    border-image-repeat: repeat;
+    /* 4. Largura da borda visual */
+    border-image-width: 30px;
 
+    /* 5. REPEAT: 'round' faz a imagem se repetir e se ajustar para não ficar cortada nem borrada */
+    border-image-repeat: round;
+
+    /* Estilos de fundo e fonte */
     font-family: Arial, sans-serif;
     background: linear-gradient(to right, #FF69B4, #FFFF00);
-    background-clip: padding-box;
+    background-attachment: fixed; /* Mantém o gradiente parado ao rolar */
+}
+
+/* Mantendo seus parâmetros de texto conforme solicitado */
+h1, h2, h3, h4 {
+    color: #007bff;
+}
+
+p {
+    color: #000000;
 }
