@@ -1,14 +1,17 @@
 body {
     margin: 0;
-    padding: 20px;
+    padding: 40px; /* Aumentado para o conteúdo não encostar na borda */
     min-height: 100vh;
+    box-sizing: border-box; /* Garante que a borda não crie barra de rolagem extra */
 
+    /* Configuração da Borda */
     border: 32px solid transparent;
     border-image-source: url("quimica.jpg");
-    border-image-slice: 32;
+    border-image-slice: 32; /* Ajuste este valor se a imagem parecer cortada */
     border-image-width: 32px;
-    border-image-repeat: repeat;
+    border-image-repeat: round; /* 'round' preenche as laterais sem desfocar ou cortar */
 
     font-family: Arial, sans-serif;
     background: linear-gradient(to right, #FF69B4, #FFFF00);
+    background-clip: padding-box; /* Impede que o gradiente invada a área da borda */
 }
