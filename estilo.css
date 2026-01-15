@@ -3,22 +3,12 @@ body {
     padding: 20px;
     min-height: 100vh;
 
-    border: 30px solid transparent;
-    border-image-source: url('quimica.jpg');
-    border-image-slice: 30;
-    border-image-width: 30px;
+    border: 32px solid transparent;
+    border-image-source: url("quimica.png");
+    border-image-slice: 32;
+    border-image-width: 32px;
     border-image-repeat: repeat;
 
     font-family: Arial, sans-serif;
-    text-align: left;
-
     background: linear-gradient(to right, #FF69B4, #FFFF00);
-}
-
-h1, h2, h3, h4 {
-    color: #007bff;
-}
-
-p {
-    color: #000;
 }
