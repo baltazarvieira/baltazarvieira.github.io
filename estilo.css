@@ -4,6 +4,46 @@ body {
     min-height: 100vh;
     box-sizing: border-box;
 
+    /* Define a espessura real da borda (44px de altura e 47px de largura visual) */
+    border-width: 44px 47px;
+    border-style: solid; /* Necessário para que a borda seja renderizada */
+    border-color: transparent;
+
+    border-image-source: url("quimica.jpg");
+
+    /* Slice: Usa os valores exatos em pixels da imagem original, sem unidade */
+    /* Topo | Direita | Baixo | Esquerda */
+    border-image-slice: 44 47 44 47;
+
+    /* Width: Força a borda a manter o tamanho exato de pixels desejado (opcional, mas recomendado) */
+    border-image-width: 44px 47px;
+
+    /* Round: Evita cortes e mantém a nitidez ajustando o espaçamento/tamanho */
+    border-image-repeat: round;
+
+    /* Estilos de fundo e fonte */
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #FF69B4, #FFFF00);
+    background-attachment: fixed; /* Mantém o gradiente parado ao rolar */
+    background-clip: padding-box; /* Garante que o fundo não invada a área da borda transparente */
+}
+
+/* Mantendo seus parâmetros de texto conforme solicitado */
+h1, h2, h3, h4 {
+    color: #007bff;
+}
+
+p {
+    color: #000000;
+}
+
+/*
+body {
+    margin: 0;
+    padding: 40px;
+    min-height: 100vh;
+    box-sizing: border-box;
+
     /* 1. Define o tamanho da borda */
     border: 30px solid transparent;
 
@@ -34,3 +74,4 @@ h1, h2, h3, h4 {
 p {
     color: #000000;
 }
+*/
