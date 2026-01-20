@@ -4,21 +4,23 @@ body {
     min-height: 100vh;
     box-sizing: border-box;
 
-    /* Define a espessura da borda exatamente com o tamanho da imagem */
+    /* Define a largura da borda */
     border-style: solid;
     border-width: 47px 44px; 
     border-color: transparent;
 
     border-image-source: url("quimica.jpg");
 
-    /* O SEGREDO: O slice deve ser igual ao tamanho da imagem. 
-       Isso diz ao navegador para não "cortar" a imagem no meio. */
-    border-image-slice: 47 44; 
+    /* Ajuste aqui: 
+       Usamos metade do tamanho da imagem (ou um pouco menos).
+       Isso cria uma área "central" na imagem que o navegador 
+       consegue repetir nas laterais. */
+    border-image-slice: 23 22; 
 
-    /* Garante que a borda desenhada tenha o tamanho da imagem para evitar desfoque (upscaling) */
+    /* Mantém o tamanho visual correto */
     border-image-width: 47px 44px;
 
-    /* 'repeat' mantém a nitidez. 'round' pode causar leve desfoque se precisar esticar. */
+    /* Repete a imagem para preencher os vãos entre os cantos */
     border-image-repeat: repeat;
 
     font-family: Arial, sans-serif;
