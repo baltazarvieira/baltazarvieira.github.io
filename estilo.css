@@ -1,31 +1,31 @@
 body {
     margin: 0;
-    padding: 60px;                 /* aumentei um pouco para ver melhor o efeito da borda */
+    padding: 60px;
     min-height: 100vh;
     box-sizing: border-box;
 
-    border-width: 44px 47px;       /* mantém a espessura visual desejada */
-    border-style: solid;
-    border-color: transparent;
+    /* 1. Define a espessura da borda */
+    border: 45px solid transparent; 
 
+    /* 2. Caminho da imagem */
     border-image-source: url("quimica.jpg");
 
-    /* Tente esses valores de slice menores se a imagem for um padrão pequeno */
-    border-image-slice: 40 40 40 40;   /* teste com valores iguais primeiro, ou volte para 44 47 44 47 */
-    
-    border-image-width: 44px 47px;     /* mantém a espessura exata */
+    /* 3. O "Slice" diz ao navegador quanto da imagem deve ser usado para os cantos. 
+       Use 33% para que ele divida a imagem em uma grade 3x3 perfeita. */
+    border-image-slice: 33%; 
 
-    /* Aqui está o principal ajuste: */
-    border-image-repeat: round;        /* ← mais recomendado para evitar distorção */
-    /* Alternativas para testar: */
-    /* border-image-repeat: repeat;    */
-    /* border-image-repeat: space;     */
-    /* border-image-repeat: round repeat;  ← horizontal round, vertical repeat */
+    /* 4. Define a largura da borda da imagem */
+    border-image-width: 45px;
+
+    /* 5. 'round' faz a imagem se repetir e se ajustar para não ser cortada */
+    border-image-repeat: round; 
 
     font-family: Arial, sans-serif;
     background: linear-gradient(to right, #FF69B4, #FFFF00);
     background-attachment: fixed;
-    background-clip: padding-box;
+    
+    /* Importante para o fundo não "atropelar" a borda */
+    background-clip: padding-box; 
 }
 
 h1, h2, h3, h4 {
