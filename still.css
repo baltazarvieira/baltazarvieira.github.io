@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap');
+
+body {
+background-color: color(display-p3 0.058 0.055 0.041); }
+
+div {
+margin: 3rem;
+display: flex;
+justify-content: center;
+align-items: center; }
+
+/* CSS custom properties */
+
+:root {
+--color-button: color(display-p3 0.789 0.654 0.481);
+--color-button-shadow: color(display-p3 0.931 0.866 0.686);
+--color-button-text: color(display-p3 0.06 0.044 0.008);
+--spacing-s: clamp(0.875rem, 0.8533rem + 0.1087vw, 0.9375rem);
+--spacing-m: clamp(1.6875rem, 1.6223rem + 0.3261vw, 1.875rem);
+--font-size-l: clamp(1.35rem, 1.2761rem + 0.3696vw, 1.5625rem);
+}
+
+.btn {
+display: inline-block;
+margin-inline: auto;
+padding-block: var(--spacing-xs);
+padding-inline: var(--spacing-m);
+box-sizing: border-box;
+background-color: var(--color-button);
+border-style: solid;
+border-width: 20px;
+border-image-outset: 0;
+border-image-repeat: stretch;
+border-image-slice: 10 10 10 10 fill;
+border-image-source:
+url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzNDAgNjAiPjxnIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+PHBhdGggZmlsbD0iI0QwQTU3NCIgZD0iTTAgMGgzNDB2NjBIMHoiLz48cGF0aCBmaWxsPSIjRjFEQ0E5IiBkPSJtMTAgMCAyLjU5MyA3YzMuOTU0LjQ5MiA3LjE4My40OTIgOS42ODYgMHM2LjA1NS0xLjgyNiAxMC42NTUtNGw3Ljc1IDRMNTguMTIgM2wxMC42NTUgMSAxMy41NjEtMWMzLjA0MiAyLjU0NSA1LjYyNSAzLjg3OCA3Ljc1IDQgMi4xMjQuMTIyIDUuMzUzLS44NzggOS42ODYtM2wxMy41NjEtNEgxMFpNMjI2LjY2NyAwbDEyLjU5MiA3YzMuOTU1LjQ5MiA3LjE4NC40OTIgOS42ODcgMCAyLjUwMy0uNDkyIDYuMDU1LTEuODI2IDEwLjY1NS00bDcuNzUgNCAxNy40MzUtNCAxMC42NTYgMSAxMy41Ni0xYzMuMDQzIDIuNTQ1IDUuNjI2IDMuODc4IDcuNzUgNCAyLjEyNC4xMjIgNi41NC0yLjIxMiAxMy4yNDgtN0gyMjYuNjY3Wk0wIDYwaDlsLTIuMzUxLTguMzMzLTQtMTcuNDM1IDMtMTAuNjU2LTMtMTMuNTYxTDkgMEgweiIvPjxwYXRoIGZpbGw9IiNGMURDQTkiIGQ9Im0yMjYuNjY3IDAtMTIuNTkzIDdjLTMuOTU1LjQ5Mi03LjE4My40OTItOS42ODcgMC0yLjUwMy0uNDkyLTYuMDU0LTEuODI2LTEwLjY1NS00bC03Ljc1IDQtMTcuNDM1LTQtMTAuNjU1IDEtMTMuNTYyLTFjLTMuMDQyIDIuNTQ1LTUuNjI1IDMuODc4LTcuNzQ5IDQtMi4xMjQuMTIyLTUuMzUzLS44NzgtOS42ODYtM2wtMTMuNTYyLTRoMTEzLjMzNFoiLz48cGF0aCBmaWxsPSIjNzc1MzQyIiBkPSJtMTAgNjAgMi41OTMtNi42M2MzLjk1NC0uNDkzIDcuMTgzLS40OTMgOS42ODYgMCAyLjUwMy40OTEgNi4wNTUgMS44MjUgMTAuNjU1IDRsNy43NS00IDE3LjQzNiA0IDEwLjY1NS0xIDEzLjU2MSAxYzMuMDQyLTIuNTQ2IDUuNjI1LTMuODc5IDcuNzUtNCAyLjEyNC0uMTIzIDUuMzUzLjg3NyA5LjY4NiAzbDEzLjU2MSA0TDEwIDYwWk0yMjYuNjY3IDYwLjM3bDEyLjU5Mi03YzMuOTU1LS40OTMgNy4xODQtLjQ5MyA5LjY4NyAwIDIuNTAzLjQ5MSA2LjA1NSAxLjgyNSAxMC42NTUgNGw3Ljc1LTQgMTcuNDM1IDQgMTAuNjU2LTEgMTMuNTYgMWMzLjA0My0yLjU0NiA1LjYyNi0zLjg3OSA3Ljc1LTQgMi4xMjQtLjEyMyA1LjM1My44NzcgOS42ODcgM0wzMzAgNjBsLTEwMy4zMzMuMzdaIi8+PHBhdGggZmlsbD0iIzc3NTM0MiIgZD0iTTM0MCAwaC00bC0yLjk4MiA4LjcwMiA0IDE3LjQzNi0xIDEwLjY1NSAxIDEzLjU2MWMtNC41NTcgNC4zMDctNi44OTYgNy41MjItNy4wMTggOS42NDYtLjEyMiAyLjEyNCAzLjIxMiAyLjEyNCAxMCAwVjBaTTExMy4zMzMgNjAuMzdsMTIuNTkzLTdjMy45NTUtLjQ5MyA3LjE4My0uNDkzIDkuNjg3IDAgMi41MDMuNDkxIDYuMDU0IDEuODI1IDEwLjY1NSA0bDcuNzUtNCAxNy40MzUgNCAxMC42NTUtMSAxMy41NjIgMWMzLjA0Mi0yLjU0NiA1LjYyNS0zLjg3OSA3Ljc0OS00IDIuMTI0LS4xMjMgNS4zNTMuODc3IDkuNjg2IDNsMTMuNTYyIDRIMTEzLjMzM1oiLz48L2c+PC9zdmc+");
+border-image-width: 20px;
+color: var(--color-button-text);
+font-family: "Sour Gummy", sans-serif;
+font-optical-sizing: auto;
+font-weight: 400;
+font-size: var(--font-size-l);
+font-style: normal;
+font-variation-settings: "wdth" 100;
+letter-spacing: .025em;
+text-align: center;
+text-decoration: none;
+text-shadow: 0 -2px 0 var(--color-button-shadow);
+text-transform: uppercase;
+cursor: pointer; }
