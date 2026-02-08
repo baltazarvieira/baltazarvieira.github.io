@@ -4,33 +4,31 @@ body {
     min-height: 100vh;
     box-sizing: border-box;
 
-    /* 1. Define a espessura da borda */
-    border: 45px solid transparent; 
+    /* espaço da borda */
+    border: 45px solid transparent;
 
-    /* 2. Caminho da imagem */
-    border-image-source: url("quimica.jpg");
+    /* fundo principal */
+    background:
+        url("quimica.jpg") repeat-x top,
+        url("quimica.jpg") repeat-x bottom,
+        url("quimica.jpg") repeat-y left,
+        url("quimica.jpg") repeat-y right,
+        linear-gradient(to right, #FF69B4, #FFFF00);
 
-    /* 3. O "Slice" diz ao navegador quanto da imagem deve ser usado para os cantos. 
-       Use 33% para que ele divida a imagem em uma grade 3x3 perfeita. */
-    border-image-slice: 33%; 
+    background-size:
+        auto 45px,   /* topo */
+        auto 45px,   /* base */
+        45px auto,   /* esquerda */
+        45px auto,   /* direita */
+        auto;
 
-    /* 4. Define a largura da borda da imagem */
-    border-image-width: 45px;
+    background-position:
+        top left,
+        bottom left,
+        top left,
+        top right,
+        center;
 
-    /* 5. 'round' faz a imagem se repetir e se ajustar para não ser cortada */
-    border-image-repeat: round; 
-
+    background-clip: padding-box;
     font-family: Arial, sans-serif;
-    background: linear-gradient(to right, #FF69B4, #FFFF00);
-    background-attachment: fixed;
-    
-    /* Importante para o fundo não "atropelar" a borda */
-    background-clip: padding-box; 
-}
-h1, h2, h3, h4 {
-    color: #007bff;
-}
-
-p {
-    color: #000000;
 }
