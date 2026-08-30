@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Página de Recados e Opiniões</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background-color: #f4f6f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      background-color: #ffffff;
+      width: 100%;
+      max-width: 600px;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      color: #333333;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 6px;
+      color: #444444;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #cccccc;
+      border-radius: 4px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus {
+      border-color: #0056b3;
+      outline: none;
+    }
+
+    .row {
+      display: flex;
+      gap: 15px;
+    }
+
+    .row .form-group {
+      flex: 1;
+    }
+
+    .aviso {
+      background-color: #e9ecef;
+      border-left: 4px solid #0056b3;
+      padding: 12px;
+      font-size: 0.9rem;
+      color: #555555;
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+
+    button {
+      width: 100%;
+      background-color: #0056b3;
+      color: #ffffff;
+      border: none;
+      padding: 12px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: #004085;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Espaço de Opiniões</h1>
+
+    <form action="https://formspree.io/f/brvieira@prof.educacao.rj.gov.br" method="POST">
+      
+      <div class="row">
+        <div class="form-group">
+          <label for="nome">Nome:</label>
+          <input type="text" id="nome" name="Nome" required placeholder="Seu nome completo">
+        </div>
+
+        <div class="form-group">
+          <label for="turma">Turma:</label>
+          <input type="text" id="turma" name="Turma" required placeholder="Ex: 3001">
+        </div>
+      </div>
+
+      <div class="aviso">
+        Você é livre pra expressar sua opinião contra, a favor ou expor suas próprias considerações, desde que siga as regras previstas em lei.
+      </div>
+
+      <div class="form-group">
+        <label for="mensagem">Sua Opinião / Recado:</label>
+        <textarea id="mensagem" name="Opinião" rows="5" required placeholder="Escreva sua consideração aqui..."></textarea>
+      </div>
+
+      <button type="submit">Enviar Recado</button>
+
+    </form>
+  </div>
+
+</body>
+</html>
